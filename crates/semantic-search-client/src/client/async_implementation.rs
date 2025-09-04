@@ -83,7 +83,7 @@ impl AsyncSemanticSearchClient {
         config::ensure_models_dir(&base_dir)?;
         ModelDownloader::ensure_models_downloaded(&config.embedding_type).await?;
 
-        let embedder = embedder_factory::create_embedder(config.embedding_type)?;
+        let embedder = embedder_factory::create_embedder(config.embedding_type, &config)?;
         let context_manager = ContextManager::new(&base_dir).await?;
         let operation_manager = OperationManager::new();
 

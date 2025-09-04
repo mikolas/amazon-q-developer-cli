@@ -47,6 +47,18 @@ pub struct SemanticSearchConfig {
 
     /// Embedding engine type to use
     pub embedding_type: EmbeddingType,
+
+    /// Ollama server base URL
+    pub ollama_base_url: String,
+
+    /// Ollama model name for embeddings
+    pub ollama_model: String,
+
+    /// Ollama request timeout in milliseconds
+    pub ollama_timeout: u64,
+
+    /// Ollama batch size for concurrent requests
+    pub ollama_batch_size: usize,
 }
 
 impl SemanticSearchConfig {
@@ -93,6 +105,10 @@ impl Default for SemanticSearchConfig {
             max_files: 10000, // Default limit of 10000 files
             hosted_models_base_url: "https://desktop-release.q.us-east-1.amazonaws.com/models".to_string(),
             embedding_type: EmbeddingType::default(),
+            ollama_base_url: "http://localhost:11434".to_string(),
+            ollama_model: "nomic-embed-text".to_string(),
+            ollama_timeout: 30000,
+            ollama_batch_size: 32,
         }
     }
 }

@@ -20,6 +20,9 @@ impl ModelDownloader {
             EmbeddingType::Fast => {
                 // BM25 doesn't require model downloads
             },
+            EmbeddingType::Ollama => {
+                // Ollama models are managed externally
+            },
             #[cfg(test)]
             EmbeddingType::Mock => {
                 // Mock doesn't require model downloads

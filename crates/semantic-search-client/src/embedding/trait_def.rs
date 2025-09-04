@@ -13,6 +13,8 @@ pub enum EmbeddingType {
     /// Best embedding using all-MiniLM-L6-v2 (not available on Linux ARM)
     #[cfg(not(all(target_os = "linux", target_arch = "aarch64")))]
     Best,
+    /// Ollama embedding using external Ollama server
+    Ollama,
     /// Use Mock embedding engine (only available in tests)
     #[cfg(test)]
     Mock,
@@ -44,6 +46,7 @@ impl EmbeddingType {
         match self {
             Self::Fast => None, // BM25 doesn't use Candle models
             Self::Best => Some(super::ModelType::MiniLML6V2),
+            Self::Ollama => None, // Ollama doesn't use Candle models
             #[cfg(test)]
             Self::Mock => None,
         }
@@ -60,12 +63,18 @@ impl EmbeddingType {
         matches!(self, Self::Best)
     }
 
+    /// Check if this embedding type uses Ollama
+    pub fn is_ollama(&self) -> bool {
+        matches!(self, Self::Ollama)
+    }
+
     /// Get a human-readable description of the embedding type
     pub fn description(&self) -> &'static str {
         match self {
             Self::Fast => "Fast",
             #[cfg(not(all(target_os = "linux", target_arch = "aarch64")))]
             Self::Best => "Best",
+            Self::Ollama => "Ollama",
             #[cfg(test)]
             Self::Mock => "Mock",
         }
@@ -78,6 +87,7 @@ impl EmbeddingType {
             "fast" => Some(Self::Fast),
             #[cfg(not(all(target_os = "linux", target_arch = "aarch64")))]
             "best" => Some(Self::Best),
+            "ollama" => Some(Self::Ollama),
             #[cfg(test)]
             "mock" => Some(Self::Mock),
             _ => None,
@@ -90,6 +100,7 @@ impl EmbeddingType {
             Self::Fast => "Fast",
             #[cfg(not(all(target_os = "linux", target_arch = "aarch64")))]
             Self::Best => "Best",
+            Self::Ollama => "Ollama",
             #[cfg(test)]
             Self::Mock => "Mock",
         }

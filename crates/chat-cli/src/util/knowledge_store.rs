@@ -245,12 +245,36 @@ impl KnowledgeStore {
             .and_then(|s| EmbeddingType::from_str(&s))
             .unwrap_or_default();
 
+        // Get Ollama settings from database
+        let ollama_base_url = os
+            .database
+            .settings
+            .get_string(Setting::OllamaBaseUrl)
+            .unwrap_or_else(|| default_config.ollama_base_url.clone());
+        let ollama_model = os
+            .database
+            .settings
+            .get_string(Setting::OllamaModel)
+            .unwrap_or_else(|| default_config.ollama_model.clone());
+        let ollama_timeout = os
+            .database
+            .settings
+            .get_int_or(Setting::OllamaTimeout, default_config.ollama_timeout as usize) as u64;
+        let ollama_batch_size = os
+            .database
+            .settings
+            .get_int_or(Setting::OllamaBatchSize, default_config.ollama_batch_size);
+
         SemanticSearchConfig {
             chunk_size,
             chunk_overlap,
             max_files,
             embedding_type,
             base_dir,
+            ollama_base_url,
+            ollama_model,
+            ollama_timeout,
+            ollama_batch_size,
             ..default_config
         }
     }

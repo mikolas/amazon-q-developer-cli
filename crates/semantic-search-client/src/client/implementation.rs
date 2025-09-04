@@ -112,7 +112,7 @@ impl SemanticSearchClient {
             // Continue with default config if initialization fails
         }
 
-        let embedder = embedder_factory::create_embedder(config.embedding_type)?;
+        let embedder = embedder_factory::create_embedder(config.embedding_type, &config)?;
 
         // Load metadata for persistent contexts
         let contexts_file = base_dir.join("contexts.json");

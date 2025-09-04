@@ -6,6 +6,7 @@ mod candle;
 mod candle_models;
 /// Mock embedder for testing and as placeholder for BM25
 pub mod mock;
+mod ollama;
 mod trait_def;
 
 pub use benchmark_utils::{
@@ -21,6 +22,7 @@ pub use candle_models::{
     ModelType,
 };
 pub use mock::MockTextEmbedder;
+pub use ollama::OllamaTextEmbedder;
 pub use trait_def::{
     EmbeddingType,
     TextEmbedderTrait,

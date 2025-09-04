@@ -39,6 +39,14 @@ pub enum Setting {
     KnowledgeChunkOverlap,
     #[strum(message = "Type of knowledge index to use (string)")]
     KnowledgeIndexType,
+    #[strum(message = "Ollama server base URL (string)")]
+    OllamaBaseUrl,
+    #[strum(message = "Ollama model name for embeddings (string)")]
+    OllamaModel,
+    #[strum(message = "Ollama request timeout in milliseconds (number)")]
+    OllamaTimeout,
+    #[strum(message = "Ollama batch size for concurrent requests (number)")]
+    OllamaBatchSize,
     #[strum(message = "Key binding for fuzzy search command (single character)")]
     SkimCommandKey,
     #[strum(message = "Enable tangent mode feature (boolean)")]
@@ -93,6 +101,10 @@ impl AsRef<str> for Setting {
             Self::KnowledgeChunkSize => "knowledge.chunkSize",
             Self::KnowledgeChunkOverlap => "knowledge.chunkOverlap",
             Self::KnowledgeIndexType => "knowledge.indexType",
+            Self::OllamaBaseUrl => "ollama.baseUrl",
+            Self::OllamaModel => "ollama.model",
+            Self::OllamaTimeout => "ollama.timeout",
+            Self::OllamaBatchSize => "ollama.batchSize",
             Self::SkimCommandKey => "chat.skimCommandKey",
             Self::EnabledTangentMode => "chat.enableTangentMode",
             Self::TangentModeKey => "chat.tangentModeKey",
@@ -138,6 +150,10 @@ impl TryFrom<&str> for Setting {
             "knowledge.chunkSize" => Ok(Self::KnowledgeChunkSize),
             "knowledge.chunkOverlap" => Ok(Self::KnowledgeChunkOverlap),
             "knowledge.indexType" => Ok(Self::KnowledgeIndexType),
+            "ollama.baseUrl" => Ok(Self::OllamaBaseUrl),
+            "ollama.model" => Ok(Self::OllamaModel),
+            "ollama.timeout" => Ok(Self::OllamaTimeout),
+            "ollama.batchSize" => Ok(Self::OllamaBatchSize),
             "chat.skimCommandKey" => Ok(Self::SkimCommandKey),
             "chat.enableTangentMode" => Ok(Self::EnabledTangentMode),
             "chat.tangentModeKey" => Ok(Self::TangentModeKey),

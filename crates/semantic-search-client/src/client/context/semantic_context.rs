@@ -8,12 +8,17 @@ use std::io::{
 };
 use std::path::PathBuf;
 
+use tracing::warn;
+
 use crate::error::Result;
 use crate::index::VectorIndex;
 use crate::types::{
     DataPoint,
     SearchResult,
 };
+
+/// Expected embedding dimension for the models used (MiniLM-L6-v2 and MiniLM-L12-v2)
+const EXPECTED_EMBEDDING_DIMENSION: usize = 768;
 
 /// A semantic context containing data points and a vector index
 pub struct SemanticContext {
@@ -70,9 +75,26 @@ impl SemanticContext {
         // Create a new index with the current data points
         let index = VectorIndex::new(self.data_points.len().max(100));
 
-        // Add all data points to the index
+        // Add all data points to the index, but skip those with invalid dimensions
+        let mut skipped_count = 0;
         for (i, point) in self.data_points.iter().enumerate() {
-            index.insert(&point.vector, i);
+            if point.vector.len() == EXPECTED_EMBEDDING_DIMENSION {
+                index.insert(&point.vector, i);
+            } else {
+                skipped_count += 1;
+                warn!(
+                    "Skipping embedding with invalid dimension: expected {}, got {}",
+                    EXPECTED_EMBEDDING_DIMENSION,
+                    point.vector.len()
+                );
+            }
+        }
+
+        if skipped_count > 0 {
+            warn!(
+                "Skipped {} embeddings with invalid dimensions during index rebuild",
+                skipped_count
+            );
         }
 
         // Set the new index
@@ -113,9 +135,27 @@ impl SemanticContext {
         // Get the existing index
         let index = self.index.as_ref().unwrap();
 
-        // Add only the points in the specified range to the index
+        // Add only the points in the specified range to the index, but skip those with invalid dimensions
+        let mut skipped_count = 0;
         for i in start_idx..end_idx {
-            index.insert(&self.data_points[i].vector, i);
+            let point = &self.data_points[i];
+            if point.vector.len() == EXPECTED_EMBEDDING_DIMENSION {
+                index.insert(&point.vector, i);
+            } else {
+                skipped_count += 1;
+                warn!(
+                    "Skipping embedding with invalid dimension: expected {}, got {}",
+                    EXPECTED_EMBEDDING_DIMENSION,
+                    point.vector.len()
+                );
+            }
+        }
+
+        if skipped_count > 0 {
+            warn!(
+                "Skipped {} embeddings with invalid dimensions during index update",
+                skipped_count
+            );
         }
 
         Ok(())

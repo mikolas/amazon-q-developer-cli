@@ -47,7 +47,7 @@ impl BackgroundWorker {
         config: SemanticSearchConfig,
         base_dir: PathBuf,
     ) -> crate::error::Result<Self> {
-        let embedder = embedder_factory::create_embedder(config.embedding_type)?;
+        let embedder = embedder_factory::create_embedder(config.embedding_type, &config)?;
         let file_processor = FileProcessor::new(config.clone());
         let context_creator = ContextCreator::new();
 
